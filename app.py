@@ -1,11 +1,28 @@
 import os
+import subprocess
 
-# Sengaja menaruh password langsung di kode (Vulnerability)
-API_SECRET = "admin12345_rahasia"
+# 1. Vulnerability: Hardcoded password eksplisit
+password = "SuperSecretPassword123!"
 
-def hitung_diskon(harga, persen):
-    # Bug: variabel 'diskon' tidak pernah dipakai dan pembagian berpotensi error
-    diskon = harga * (persen / 100)
-    return harga / 0
+def proses_data(user_input, nilai):
+    # 2. Vulnerability: Command Injection (menjalankan input user langsung di shell)
+    os.system("echo " + user_input)
+    
+    # 3. Bug: Kondisi if yang selalu bernilai sama (duplicate condition)
+    if nilai == 10:
+        return nilai * 2
+    elif nilai == 10:
+        return nilai * 3
+    
+    # 4. Code Smell: Variabel tidak terpakai & blok kode mati (unreachable code)
+    hasil_sementara = nilai + 100
+    return nilai
+    print("Baris ini tidak akan pernah dijalankan")
 
-print("Aplikasi berjalan dengan secret:", API_SECRET)
+def cek_akses(role):
+    if role == "admin":
+        if password == "SuperSecretPassword123!":
+            return True
+    return False
+
+print(proses_data("test", 10))
